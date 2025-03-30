@@ -1,6 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import authRouter from './routes/auth.routes.js'
+import userRouter from './routes/user.routes.js'
 
 const app = express()
 
@@ -16,5 +18,8 @@ app.use(cookieParser())  // by this we can access user cookies , and can do CRUD
 app.get("/", (req , res)=>{
   return res.status(200).json({ message: "going good from money mate" });
 })
+
+app.use("/api/v1/auth" , authRouter)
+app.use("/api/v1/user" , userRouter)
 
 export {app}
