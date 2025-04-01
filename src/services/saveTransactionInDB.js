@@ -2,15 +2,15 @@ import connectDB from "../db/index.js"
 import { Transaction } from "../models/transaction.model.js"
 
 
-const saveTransactionInDb = async (amount , type , category , description , userId)=>{
-  console.log(amount , type , category, description , date)
+const saveTransactionInDb = async (amount , type , category , description , userId , expenseDate)=>{
+
   try {
     const transaction = await Transaction.create({
       amount:amount,
       type:type,
       category:category,
       description:description,
-      date:date,
+      date: expenseDate,
       creator:userId
     })
     console.log("Transaction saved:");

@@ -69,13 +69,10 @@ const allBudget = async ( req , res)=>{
   }
 }
 
-<<<<<<< HEAD
 // instead of HTTP connection use websockets for better result and user experience
-=======
-// instead of HTTP connection use websockets
->>>>>>> dc1ff177948e8d2503493a6f84a2f410ac8d5a84
 const addExpense = async (req , res)=>{
   const {userText , userId} = req.body
+  console.log("userid" , userId)
   if (!userText) return res.status(400).json({ error: "Message is required" })
 
   const messages = [{ role: "system", content: systemPrompt }];
@@ -100,7 +97,7 @@ const addExpense = async (req , res)=>{
       console.log("Logging your expense...");
 
       const expenseDate = date || todayDate;
-      await saveTransactionInDb(amount, type, category, description, expenseDate);
+      await saveTransactionInDb(amount, type, category, description, userId ,expenseDate);
 
       return res.status(200).json({ message: "Your expense has been logged successfully." });
     }

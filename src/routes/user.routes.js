@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { addExpense } from "../controllers/user.controller.js";
+import { addExpense, allBudget, allExpense } from "../controllers/user.controller.js";
 
 const userRouter = Router()
 
 userRouter.route("/addExpense").post(addExpense)
+userRouter.route("/allExpense").get(allExpense)
+userRouter.route("/allBudget", allBudget)
 
 
 export default userRouter
