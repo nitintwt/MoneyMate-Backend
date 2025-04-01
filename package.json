@@ -18,6 +18,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.1",
+    "openai": "^4.90.0",
+    "readline-sync": "^1.4.10",
     "uuid": "^11.1.0",
     "zod": "^3.24.2"
   },
