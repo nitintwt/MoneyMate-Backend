@@ -69,7 +69,11 @@ const allBudget = async ( req , res)=>{
   }
 }
 
+<<<<<<< HEAD
 // instead of HTTP connection use websockets for better result and user experience
+=======
+// instead of HTTP connection use websockets
+>>>>>>> dc1ff177948e8d2503493a6f84a2f410ac8d5a84
 const addExpense = async (req , res)=>{
   const {userText , userId} = req.body
   if (!userText) return res.status(400).json({ error: "Message is required" })
