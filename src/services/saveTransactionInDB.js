@@ -1,6 +1,8 @@
+import connectDB from "../db/index.js"
 import { Transaction } from "../models/transaction.model.js"
 
-const saveTransactionInDb = async (amount , type , category , description , date)=>{
+
+const saveTransactionInDb = async (amount , type , category , description , userId)=>{
   console.log(amount , type , category, description , date)
   try {
     const transaction = await Transaction.create({
@@ -8,10 +10,13 @@ const saveTransactionInDb = async (amount , type , category , description , date
       type:type,
       category:category,
       description:description,
-      date:date
+      date:date,
+      creator:userId
     })
+    console.log("Transaction saved:");
+    return transaction;
   } catch (error) {
-    console.log("Something went wrong")
+    console.log("Something went wrong", error)
   }
 
 }
