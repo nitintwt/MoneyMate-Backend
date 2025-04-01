@@ -7,11 +7,7 @@ dotenv.config({ path: "./.env" });
 
 const client = new OpenAI({
 	baseURL: "https://api.groq.com/openai/v1",
-<<<<<<< HEAD
 	apiKey: process.env.Groq_API_KEY,
-=======
-	apiKey: "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",
->>>>>>> dc1ff177948e8d2503493a6f84a2f410ac8d5a84
 })*/
 
 export const systemPrompt = `
