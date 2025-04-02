@@ -48,14 +48,13 @@ export const extractSubscriptionDetails = async (text) => {
 
 
   `;
-  const response = await client.chatCompletion({
+  const response = await client.chat.completions.create({
     model: "llama3-70b-8192",
     messages: [
       { role: "system", content: prompt },
       { role: "user", content: text },
     ],
-    temperature: 0.5,
-    max_tokens: 5000,
   })
+  console.log("Raw API Response:", response);
   return JSON.parse(response.choices[0].message.content)
 }

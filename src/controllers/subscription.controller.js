@@ -7,8 +7,8 @@ import { User } from "../models/user.model.js";
 import { Subscription } from "../models/subscription.model.js";
 
 const uuidSchema = z.object({
-  userId: z.string().uuid().optional(),
-  subscriptionId: z.string().uuid().optional()
+  userId: z.string(),
+  subscriptionId: z.string()
 })
 
 // generated a endpoint for the google oauth2 and redirect user to it for authentication
@@ -31,7 +31,7 @@ const googleAuth = async (req , res)=>{
 
 const googleLogin = async (req , res)=>{
   const code = req.query.code
-  const {userId} = uuidSchema.parse({userId:req.body.userId})
+  const {userId} = req.body
 
   const oauth2Client = new google.auth.OAuth2(
    process.env.CLIENT_ID,
@@ -55,7 +55,7 @@ const googleLogin = async (req , res)=>{
 }
 
 const getSubscriptions = async (req , res)=>{
-  const {userId} = uuidSchema.parse({userId:req.query.userId})
+  const userId = req.query.userId
 
   const user = await User.findById(userId)
 
@@ -183,16 +183,17 @@ const getSubscriptions = async (req , res)=>{
     // saving in db
     await Promise.all(
       subscriptions.map(async (subscription)=> await Subscription.create({
-        data:{
           service:subscription.service,
           amount: subscription.amount,
           frequency:subscription.frequency,
           lastRenewalDate:subscription.lastRenewalDate,
           creator:userId,
           category:subscription.category
-        }
       }))
     )
+
+    user.subscriptions = await Subscription.insertMany(subscriptions);
+    await user.save();
 
     console.log("saved in db")
 
@@ -206,7 +207,7 @@ const getSubscriptions = async (req , res)=>{
 }
 
 const getUserDetails = async (req , res)=>{
-  const {userId} = uuidSchema.parse({userId:req.query.userId})
+  const userId = req.query.userId
 
   if (!userId) {
     return res.status(400).json(
@@ -214,7 +215,8 @@ const getUserDetails = async (req , res)=>{
     )
   }
   try {
-    const user = await User.findById(userId).iclude('subscription')
+    const user = await User.findById(userId).populate("subscriptions")
+    console.log("users" , user)
     if (!user) {
       return res.status(404).json(
         new ApiResponse(404, null, "User not found")
@@ -224,12 +226,14 @@ const getUserDetails = async (req , res)=>{
       new ApiResponse(200 , user , "User Data fetched successfully")
     )
   } catch (error) {
+    console.log(error)
     return res.status(500).json({message:"Something went wrong while fetching user details"})
   }
 }
 
 const deleteSubscription = async (req , res)=>{
-  const {userId , subscriptionId} = uuidSchema.parse({userId: req.query.userId , subscriptionId:req.query.subscriptionId})
+  const {userId , subscriptionId} = req.query
+  console.log(subscriptionId)
 
   try {
     await Subscription.findByIdAndDelete(subscriptionId)
@@ -246,7 +250,7 @@ const deleteSubscription = async (req , res)=>{
 
 const startNotification = async (req , res)=>{
   try {
-    const {subscriptionId} = uuidSchema.parse({subscriptionId:req.body.subscriptionId})
+    const {subscriptionId} = req.body
 
     await Subscription.findByIdAndUpdate(subscriptionId , {isNotification:true})
     // todo:- push notify job to a kafka queue
@@ -263,7 +267,7 @@ const startNotification = async (req , res)=>{
 
 const stopNotification = async (req , res)=>{
   try {
-    const {subscriptionId}= uuidSchema.parse({subscriptionId:req.body.subscriptionId})
+    const {subscriptionId}= req.body
 
     await Subscription.findByIdAndUpdate(subscriptionId , {isNotification:false})
     return res.status(200).json({message:"Your notification service has been stopped"})
