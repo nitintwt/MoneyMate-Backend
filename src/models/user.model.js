@@ -22,6 +22,9 @@ const userSchema = new Schema(
       type:Boolean,
       default: false,
     },
+    tokens:{
+      type:String
+    },
     razorpayId:{
       type : String,
       default: null,
@@ -37,6 +40,12 @@ const userSchema = new Schema(
         type:Schema.Types.ObjectId,
         ref:'Transaction'
       } 
+    ],
+    subscriptions:[
+      {
+        type:Schema.Types.ObjectId,
+        ref:'Subscription'
+      }
     ]
   },
   {
